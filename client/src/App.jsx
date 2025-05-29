@@ -1,29 +1,41 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import axiosClient from "./api/axiosClient";
 
 function App() {
   const [users, setUsers] = useState([]);
   const [newUsername, setNewUsername] = useState("");
 
-  // Dummy data for now - replace with actual API call
+  const postUser = async (data) => {
+    const res = await axiosClient.post("/users", data);
+    return res.data;
+  };
+
   useEffect(() => {
-    // Example data - in a real app, fetch from your API
-    setUsers([
-      { id: 1, username: "user1" },
-      { id: 2, username: "user2" },
-      { id: 3, username: "user3" },
-    ]);
+    const fetchUsers = async () => {
+      try {
+        const res = await axiosClient.get("/users");
+        setUsers(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (newUsername.trim()) {
       const newUser = {
-        id: users.length ? Math.max(...users.map((user) => user.id)) + 1 : 1,
         username: newUsername.trim(),
       };
-      setUsers([...users, newUser]);
+      const res = await postUser(newUser);
       setNewUsername("");
+
+      if (res.user) {
+        setUsers([...users, res.user]);
+      }
     }
   };
 
@@ -42,8 +54,8 @@ function App() {
           </thead>
           <tbody>
             {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
+              <tr key={user._id}>
+                <td>{user._id}</td>
                 <td>{user.username}</td>
               </tr>
             ))}

@@ -1,3 +1,9 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
 .container {
   max-width: 800px;
   margin: 0 auto;
@@ -8,6 +14,7 @@
 h1,
 h2 {
   color: #333;
+  margin-bottom: 1rem;
 }
 
 .table-container,
@@ -36,6 +43,7 @@ tr:hover {
 }
 
 .form-group {
+  width: 100%;
   margin-bottom: 15px;
 }
 
