@@ -8,7 +8,12 @@ const PORT = process.env.PORT;
 const MONGODB_URI = process.env.DB_URI;
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 
 //schema
 const userSchema = new mongoose.Schema({
@@ -18,6 +23,10 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model("User", userSchema);
 
 // routes
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "healty!" });
+});
+
 app.get("/api/users", async (req, res) => {
   try {
     const users = await User.find({}).select("-password");
@@ -52,8 +61,12 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 
   // connect to MongoDB
+  console.log("connecting to db...");
   mongoose
     .connect(MONGODB_URI)
     .then(() => console.log("MongoDB connection established"))
-    .catch((error) => console.error("MongoDB connection error:", error));
+    .catch((error) => {
+      console.error("MongoDB connection error:", error);
+      process.exit(1);
+    });
 });
