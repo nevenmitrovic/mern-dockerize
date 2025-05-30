@@ -10,7 +10,7 @@ const MONGODB_URI = process.env.DB_URI;
 app.use(express.json());
 app.use(
   cors({
-    origin: "*",
+    origin: "https://auth.localhost",
     credentials: true,
   })
 );
